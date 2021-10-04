@@ -44,28 +44,32 @@ class ViewControl:
         self.ViewUmbrales(treeview_umbral)
         self.neurona = Neurona(file_entrada)
 
-    def LoadData(self, entry, treeview_input_output, treeview_umbral, treeview_peso):
+    def LoadData(self, entry, treeview_input_output):
         file_entrada = filedialog.askopenfilename()
         entry.insert(0, file_entrada)
 
         self.neurona = Neurona(file_entrada)
         self.LlenarTabla(treeview_input_output,
                          self.neurona.entrenador.dataSet)
-        self.ViewUmbrales(treeview_umbral)
-        self.ViewPesos(treeview_peso)
+        # self.ViewUmbrales(treeview_umbral)
+        # self.ViewPesos(treeview_peso)
 
         return file_entrada
 
     def CrearGrid(self, treeview, frame):
         treeview.place(relheight=1, relwidth=1)
+
         treescrolly = Scrollbar(
             frame, orient="vertical", command=treeview.yview)
+
         treescrollx = Scrollbar(
             frame, orient="horizontal", command=treeview.xview)
+
         treeview.configure(xscrollcommand=treescrollx.set,
                            yscrollcommand=treescrolly.set)
-        treescrollx.pack(side="bottom", fill="x")
+
         treescrolly.pack(side="right", fill="y")
+        treescrollx.pack(side="bottom", fill="x")
 
     def GraficarDouPoint(self, frame, data_1, data_2):
         fig = Figure(figsize=(5, 4), dpi=100)
@@ -75,19 +79,20 @@ class ViewControl:
         canvas.draw()
         canvas.get_tk_widget().place(relwidth=1, relheight=1)
 
-    def Entrenar(self, funcion, treeview_umbral, treeview_peso):
-        iterador = 0
-        while True:
-            error_patron = []
-            contador = 0
+    def Entrenar(self, funcion):
+
+        for iterador in range(self.neurona.numero_iteraciones - 1):
+
             self.neurona.Entrenar(funcion)
-            iterador += 1
-            if ((iterador > self.neurona.numero_iteraciones - 1) or (self.neurona.error_RMS <= self.neurona.error)):
+
+            if (self.neurona.error_RMS <= self.neurona.error):
                 break
 
-        self.ViewUmbrales(treeview_umbral)
-        self.ViewPesos(treeview_peso)
+        # self.ViewUmbrales(treeview_umbral)
+        # self.ViewPesos(treeview_peso)
 
         if (self.neurona.error_RMS <= self.neurona.error):
-            np.savetxt('LF/Data/pesos', self.neurona.pesos, delimiter=' ')
-            np.savetxt('LF/Data/umbral', self.neurona.umbral, delimiter=' ')
+            np.savetxt('Data/pesos.csv',
+                       self.neurona.pesos, delimiter=' ')
+            np.savetxt('Data/umbrales.csv',
+                       self.neurona.umbrales, delimiter=' ')

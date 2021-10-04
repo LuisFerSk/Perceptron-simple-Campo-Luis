@@ -73,6 +73,7 @@ class Neurona:
         self.YR = []
         contador = 0
         self.error_patron = []
+
         for entrada in self.entradas:
             self.salida_resultante = self.CalcularSalidaResultante(
                 entrada, self.pesos, self.umbrales)
@@ -109,6 +110,8 @@ class Neurona:
             self.error_RMS = self.CalcularErrorRMS(self.error_patron)
 
             self.errores_RMS.append(self.error_RMS)
+
+            print(self.error_RMS)
 
             self.num_iterate += 1
 
